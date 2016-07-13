@@ -1,125 +1,7 @@
-/**
- Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
- Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-
- http://aws.amazon.com/apache2.0/
-
- or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
- */
-
-/**
- * This sample shows how to create a simple Flash Card skill. The skill
- * supports 1 player at a time, and does not support games across sessions.
- */
-
 'use strict';
 
-/**
- * When editing your questions pay attention to your punctuation. Make sure you use question marks or periods.
- * Make sure the first answer is the correct one. Set at least 4 answers, any extras will be shuffled in.
- */
 
 var data = require('./data');
-
-// var animals = [
-//   {"aardvark": ["calf", "cub"]},
-//   {"alligator": ["hatchling"]},
-//   {"alpaca": ["cria"]},
-//   {"anteater": ["pup"]},
-//   {"antelope": ["calf"]},
-//   {"ant": ["antling"]},
-//   {"ape": ["baby"]},
-//   {"armadillo": ["pup"]},
-//   {"baboon": ["infant"]},
-//   {"bat": ["pup"]},
-//   {"bear": ["cub"]},
-//   {"bee": ["larva"]},
-//   {"beluga": ["calf"]},
-//   {"bird": ["hatchling", "chick"]},
-//   {"boar": ["piglet", "shoat", "farrow"]},
-//   {"bobcat": ["kitten", "cub"]},
-//   {"butterfly": ["caterpillar", "larva", "pupa", "chrysalis"]},
-//   {"camel": ["calf"]},
-//   {"caribou": ["calf", "fawn"]},
-//   {"cat": ["kitten"]},
-//   {"cattle": ["calf"]},
-//   {"cheetah": ["cub"]},
-//   {"chicken": ["chick", "pullet", "cockrell"]},
-//   {"clam": ["larva"]},
-//   {"cockroach": ["nymph"]},
-//   {"coyote": ["pup", "whelp"]},
-//   {"crane": ["chick"]},
-//   {"crocodile": ["hatchling"]},
-//   {"crow": ["chick"]},
-//   {"deer": ["fawn"]},
-//   {"dinosaur": ["hatchling", "juvenile"]},
-//   {"dog": ["pup"]},
-//   {"dolphin": ["pup", "calf"]},
-//   {"donkey": ["colt", "foal"]},
-//   {"dove": ["squab", "chick"]},
-//   {"duck": ["duckling"]},
-//   {"eagle": ["fledgling", "eaglet"]},
-//   {"echidna": ["puggle"]},
-//   {"eel": ["larva", "juvenile"]},
-//   {"elephant": ["calf"]},
-//   {"fish": ["fry", "fingerling"]},
-//   {"fly": ["maggot"]},
-//   {"fox": ["kit", "cub", "pup"]},
-//   {"frog": ["tadpole", "polliwog", "froglet"]},
-//   {"gerbil": ["pup"]},
-//   {"giraffe": ["calf"]},
-//   {"goat": ["kid", "billy"]},
-//   {"goose": ["gosling"]},
-//   {"gorilla": ["infant"]},
-//   {"grasshopper": ["nymph"]},
-//   {"guinea pig": ["pig", "pup"]},
-//   {"gull": ["chick"]},
-//   {"hamster": ["pup"]},
-//   {"hare": ["leveret"]},
-//   {"hawk": ["eyas"]},
-//   {"hedgehog": ["piglet", "pup"]},
-//   {"hog": ["shoat", "farrow"]},
-//   {"honey badger": ["kit", "cub"]},
-//   {"horse": ["foal", "colt", "stat", "stag"]},
-//   {"human": ["baby", "infant", "toddler"]},
-//   {"hyena": ["cub"]},
-//   {"jellyfish": ["ephyna"]},
-//   {"kangaroo": ["joey"]},
-//   {"koala": ["joey"]},
-//   {"lemur": ["baby", "infant"]},
-//   {"leopard": ["cub"]},
-//   {"llama": ["cria"]},
-//   {"monkey": ["infant"]},
-//   {"owl": ["owlet", "fledgling"]},
-//   {"ox": ["stot", "calf"]},
-//   {"oyster": ["spat"]},
-//   {"panda": ["cub"]},
-//   {"pig": ["piglet"]},
-//   {"pigeon": ["squab", "squeaker"]},
-//   {"rabbit": ["kitten", "bunny", "kit"]},
-//   {"reindeer": ["calf"]},
-//   {"shark": ["pup"]},
-//   {"skunk": ["kit"]},
-//   {"snake": ["snakelet", "neonate", "hatchling"]},
-//   {"spider": ["spiderling"]},
-//   {"squirrel": ["pup", "kit", "kitten"]},
-//   {"swan": ["sygnet", "flapper"]},
-//   {"tiger": ["cub", "whelp"]},
-//   {"turtle": ["hatchling"]},
-//   {"walrus": ["cub", "pup"]},
-//   {"whale": ["calf"]},
-//   {"wolf": ["pup", "whelp"]},
-//   {"zebra": ["colt", "foal"]},
-// ];
-
-// function keyToQuestion(question) {
-//   var key = "What is a baby " + Object.keys(question)[0] + " called?"
-//   var data = {}
-//   data[key] = question[Object.keys(question)[0]]
-//   return data
-// }
-
 var questions = data.questions;
 
 // Route the incoming request based on type (LaunchRequest, IntentRequest,
@@ -205,24 +87,34 @@ function onIntent(intentRequest, session, callback) {
     // dispatch custom intents to handlers here
     if ("AnswerIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
+
     } else if ("AnswerOnlyIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
+
     } else if ("DontKnowIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
+
     } else if ("AMAZON.YesIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
+
     } else if ("AMAZON.NoIntent" === intentName) {
         handleAnswerRequest(intent, session, callback);
+
     } else if ("AMAZON.StartOverIntent" === intentName) {
         getWelcomeResponse(callback);
+
     } else if ("AMAZON.RepeatIntent" === intentName) {
         handleRepeatRequest(intent, session, callback);
+
     } else if ("AMAZON.HelpIntent" === intentName) {
         handleGetHelpRequest(intent, session, callback);
+
     } else if ("AMAZON.StopIntent" === intentName) {
         handleFinishSessionRequest(intent, session, callback);
+
     } else if ("AMAZON.CancelIntent" === intentName) {
         handleFinishSessionRequest(intent, session, callback);
+
     } else {
         throw "Invalid intent";
     }
@@ -243,7 +135,7 @@ function onSessionEnded(sessionEndedRequest, session) {
 
 var ANSWER_COUNT = 1;
 var GAME_LENGTH = 5;
-var CARD_TITLE = "Chemistry Flash Cards"; // Be sure to change this for your skill.
+var CARD_TITLE = "Baby Animal Names Flash Cards"; // Be sure to change this for your skill.
 
 
 function getWelcomeResponse(callback) {
