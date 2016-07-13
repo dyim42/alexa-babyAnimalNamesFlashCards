@@ -1,8 +1,15 @@
 'use strict';
 
+// module.change_code = 1;
+
+// var _ = require('lodash');
+// var Alexa = require('alexa-app');
+// var app = new Alexa.app('babyAnimalNames');
+
 
 var data = require('./data');
 var questions = data.questions;
+
 
 // Route the incoming request based on type (LaunchRequest, IntentRequest,
 // etc.) The JSON body of the request is provided in the event parameter.
@@ -23,6 +30,9 @@ exports.handler = function (event, context) {
             onSessionStarted({requestId: event.request.requestId}, event.session);
         }
 
+        console.log("handler.event: " + JSON.stringify(event));
+        console.log("handler.event.request: " + JSON.stringify(event.request));
+        console.log("handler.event.request.type: " + event.request.type);
         if (event.request.type === "LaunchRequest") {
             onLaunch(event.request,
                 event.session,
@@ -50,6 +60,7 @@ exports.handler = function (event, context) {
 function onSessionStarted(sessionStartedRequest, session) {
     console.log("onSessionStarted requestId=" + sessionStartedRequest.requestId
         + ", sessionId=" + session.sessionId);
+    console.log("onSessionStarted.session: " + JSON.stringify(session));
 
     // add any session init logic here
 }
@@ -73,6 +84,13 @@ function onIntent(intentRequest, session, callback) {
 
     var intent = intentRequest.intent,
         intentName = intentRequest.intent.name;
+
+    console.log("onIntent.intent: " + JSON.stringify(intent));
+    console.log("onIntent.intentName: " + intentName);
+    console.log("onIntent.session.attributes: " + JSON.stringify(session.attributes));
+    if (session.new) {
+        getWelcomeResponse(callback);
+    }
 
     // handle yes/no intent after the user has been prompted
     if (session.attributes && session.attributes.userPromptedToContinue) {
@@ -236,40 +254,7 @@ function populateRoundAnswers(gameQuestionIndexes, correctAnswerIndex, correctAn
 }
 
 function handleAnswerRequest(intent, session, callback) {
-    // Get the answers for a given question, and place the correct answer at the spot marked by the
-    // correctAnswerTargetLocation variable. Note that you can have as many answers as you want but
-    // only ANSWER_COUNT will be selected.
-    var answers = [],
-        answersCopy = questions[gameQuestionIndexes[correctAnswerIndex]][Object.keys(questions[gameQuestionIndexes[correctAnswerIndex]])[0]],
-        temp, i;
-
-    var index = answersCopy.length;
-
-    if (index < ANSWER_COUNT){
-        throw "Not enough answers for question.";
-    }
-
-    // Shuffle the answers, excluding the first element.
-    for (var j = 1; j < answersCopy.length; j++){
-        var rand = Math.floor(Math.random() * (index - 1)) + 1;
-        index -= 1;
-
-        var temp = answersCopy[index];
-        answersCopy[index] = answersCopy[rand];
-        answersCopy[rand] = temp;
-    }
-
-    // Swap the correct answer into the target location
-    for (i = 0; i < ANSWER_COUNT; i++) {
-        answers[i] = answersCopy[i];
-    }
-    temp = answers[0];
-    answers[0] = answers[correctAnswerTargetLocation];
-    answers[correctAnswerTargetLocation] = temp;
-    return answers;
-}
-
-function handleAnswerRequest(intent, session, callback) {
+    console.log("handleAnswerRequest.session: " + JSON.stringify(session));
     var speechOutput = "";
     var sessionAttributes = {};
     var gameInProgress = session.attributes && session.attributes.questions;
@@ -380,6 +365,8 @@ function handleGetHelpRequest(intent, session, callback) {
 
 function handleFinishSessionRequest(intent, session, callback) {
     // End the session with a "Good bye!" if the user wants to quit the game
+    // cleans up session attributes so when you start again, it isn't all messed up.
+    session.attributes = {};
     callback(session.attributes,
         buildSpeechletResponseWithoutCard("Thanks for playing Baby Animal Names Flash Cards!", "", true));
 }
